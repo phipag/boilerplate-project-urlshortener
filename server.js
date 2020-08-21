@@ -59,6 +59,20 @@ app.post('/api/shorturl/new', (req, res) => {
     }
 });
 
+app.get('/api/shorturl/:id', (req, res) => {
+    const { id } = req.params;
+    if (parseInt(id, 10) == id) {
+        return ShortURL.findOne({ short_url: id }, (err, shortURL) => {
+            if (err) return res.json({ error: 'invalid short URL' });
+            if (!shortURL) {
+                return res.json({ error: 'Short URL not found.' });
+            }
+            return res.redirect(shortURL.original_url);
+        });
+    }
+    return res.json({ error: 'invalid short URL' });
+});
+
 app.listen(port, function () {
     console.log('Node.js listening ...');
 });
